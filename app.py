@@ -110,30 +110,32 @@ elif aba == "Diversidade":
 
     with col1:
         # gráfico de pizza com cores definidas por gênero
-        fig = px.pie(
+        fig_genero = go.Figure(go.Pie(
+            labels=genero.index,
             values=genero.values,
-            names=genero.index,
+            marker=dict(colors=["#4A90D9", "#E8A0BF"])
+        ))
+        fig_genero.update_layout(
             title="Distribuição de Gênero",
-            color=genero.index,
-            color_discrete_map={"Male": "#4A90D9", "Female": "#E8A0BF"}
+            showlegend=True
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig_genero, use_container_width=True)
 
     with col2:
         faixa_df = faixa.reset_index()
         faixa_df.columns = ["faixa_etaria", "quantidade"]
 
         # usando go.Figure para evitar herança de legenda do gráfico de pizza
-        fig = go.Figure(go.Bar(
+        fig_faixa = go.Figure(go.Bar(
             x=faixa_df["faixa_etaria"],
             y=faixa_df["quantidade"],
             marker_color="#4A90D9",
             name=""
         ))
-        fig.update_layout(
+        fig_faixa.update_layout(
             title="Distribuição por Faixa Etária",
             xaxis_title="Faixa Etária",
             yaxis_title="Funcionários",
             showlegend=False
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig_faixa, use_container_width=True)
