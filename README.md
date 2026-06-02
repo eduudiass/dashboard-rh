@@ -1,5 +1,7 @@
 # Dashboard de RH
 
+[Acessar Dashboard](https://dashboard-rh-eduardo.streamlit.app/)
+
 Dashboard para análise de dados de pessoas construído com Python e Streamlit. Cobre as principais métricas de RH: turnover, admissões, desligamentos, absenteísmo e diversidade em uma única aplicação interativa.
 
 ## Sobre
