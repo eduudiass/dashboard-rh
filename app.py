@@ -1,5 +1,6 @@
 import streamlit as st
 import plotly.express as px
+import plotly.graph_objects as go
 import sys
 import os
 
@@ -122,15 +123,17 @@ elif aba == "Diversidade":
         faixa_df = faixa.reset_index()
         faixa_df.columns = ["faixa_etaria", "quantidade"]
 
-        # gráfico de barras por faixa etária sem legenda desnecessária
-        fig = px.bar(
-            faixa_df,
-            x="faixa_etaria",
-            y="quantidade",
+        # usando go.Figure para evitar herança de legenda do gráfico de pizza
+        fig = go.Figure(go.Bar(
+            x=faixa_df["faixa_etaria"],
+            y=faixa_df["quantidade"],
+            marker_color="#4A90D9",
+            name=""
+        ))
+        fig.update_layout(
             title="Distribuição por Faixa Etária",
-            labels={"quantidade": "Funcionários", "faixa_etaria": "Faixa Etária"}
+            xaxis_title="Faixa Etária",
+            yaxis_title="Funcionários",
+            showlegend=False
         )
-        # define a cor diretamente na barra para evitar legenda Male/Female indevida
-        fig.update_traces(marker_color="#4A90D9")
-        fig.update_layout(showlegend=False)
         st.plotly_chart(fig, use_container_width=True)
