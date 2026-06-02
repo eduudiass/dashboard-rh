@@ -122,15 +122,15 @@ elif aba == "Diversidade":
         faixa_df = faixa.reset_index()
         faixa_df.columns = ["faixa_etaria", "quantidade"]
 
-        # gráfico de barras por faixa etária sem escala de cor para evitar legenda desnecessária
+        # gráfico de barras por faixa etária sem legenda desnecessária
         fig = px.bar(
             faixa_df,
             x="faixa_etaria",
             y="quantidade",
             title="Distribuição por Faixa Etária",
-            labels={"quantidade": "Funcionários", "faixa_etaria": "Faixa Etária"},
-            color_discrete_sequence=["#4A90D9"]
+            labels={"quantidade": "Funcionários", "faixa_etaria": "Faixa Etária"}
         )
-        # remove a legenda que aparecia com Male/Female indevidamente
+        # define a cor diretamente na barra para evitar legenda Male/Female indevida
+        fig.update_traces(marker_color="#4A90D9")
         fig.update_layout(showlegend=False)
         st.plotly_chart(fig, use_container_width=True)
