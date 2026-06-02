@@ -14,10 +14,10 @@ st.set_page_config(page_title="Dashboard RH", layout="wide")
 # carrega os dados
 ibm, movimentacao = carregar_dados()
 
-# título
+# título principal
 st.title("Dashboard de Recursos Humanos")
 
-# aba de navegação
+# menu de navegação na barra lateral
 aba = st.sidebar.radio("Navegação", [
     "Visão Geral",
     "Turnover",
@@ -32,6 +32,7 @@ if aba == "Visão Geral":
 
     st.subheader("Visão Geral")
 
+    # exibe os três KPIs principais lado a lado
     col1, col2, col3 = st.columns(3)
     col1.metric("Total de Funcionários", total)
     col2.metric("Saídas", saidas)
@@ -39,6 +40,7 @@ if aba == "Visão Geral":
 
     st.divider()
 
+    # rodapé com autor e links
     st.markdown("**Desenvolvido por Eduardo Dias**")
     st.markdown("[LinkedIn](https://linkedin.com/in/eduardodiasds) | [GitHub](https://github.com/eduudiass)")
 
@@ -48,6 +50,7 @@ elif aba == "Turnover":
 
     st.subheader("Turnover por Departamento")
 
+    # gráfico de barras com escala de cor iniciando em zero para evitar barras brancas
     fig = px.bar(
         turnover_depto,
         x="departamento",
@@ -64,6 +67,7 @@ elif aba == "Turnover":
 elif aba == "Admissões e Desligamentos":
     st.subheader("Movimentação Mensal")
 
+    # gráfico de linha com duas séries: admissões e desligamentos
     fig = px.line(
         movimentacao,
         x="data",
@@ -78,8 +82,11 @@ elif aba == "Absenteísmo":
     media_abs, abs_depto = calcular_absenteismo(ibm)
 
     st.subheader("Absenteísmo")
+
+    # KPI de taxa média geral
     st.metric("Taxa Média Geral", f"{media_abs}%")
 
+    # gráfico de barras com escala de cor iniciando em zero
     fig = px.bar(
         abs_depto,
         x="departamento",
@@ -101,24 +108,29 @@ elif aba == "Diversidade":
     col1, col2 = st.columns(2)
 
     with col1:
+        # gráfico de pizza com cores definidas por gênero
         fig = px.pie(
             values=genero.values,
             names=genero.index,
-            title="Distribuição de Gênero"
+            title="Distribuição de Gênero",
+            color=genero.index,
+            color_discrete_map={"Male": "#4A90D9", "Female": "#E8A0BF"}
         )
         st.plotly_chart(fig, use_container_width=True)
 
     with col2:
         faixa_df = faixa.reset_index()
         faixa_df.columns = ["faixa_etaria", "quantidade"]
+
+        # gráfico de barras por faixa etária sem escala de cor para evitar legenda desnecessária
         fig = px.bar(
             faixa_df,
             x="faixa_etaria",
             y="quantidade",
             title="Distribuição por Faixa Etária",
             labels={"quantidade": "Funcionários", "faixa_etaria": "Faixa Etária"},
-            color="quantidade",
-            color_continuous_scale="Blues",
-            range_color=[0, faixa_df["quantidade"].max() * 1.2]
+            color_discrete_sequence=["#4A90D9"]
         )
+        # remove a legenda que aparecia com Male/Female indevidamente
+        fig.update_layout(showlegend=False)
         st.plotly_chart(fig, use_container_width=True)
