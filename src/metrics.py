@@ -1,5 +1,18 @@
 import pandas as pd
 
+# mapeamento de departamentos para português
+DEPARTAMENTOS = {
+    "Human Resources": "Recursos Humanos",
+    "Research & Development": "Pesquisa e Desenvolvimento",
+    "Sales": "Vendas"
+}
+
+# mapeamento de gênero para português
+GENERO = {
+    "Male": "Masculino",
+    "Female": "Feminino"
+}
+
 def carregar_dados():
     # carrega o dataset principal do IBM
     ibm = pd.read_csv("data/raw/WA_Fn-UseC_-HR-Employee-Attrition.csv")
@@ -33,12 +46,18 @@ def calcular_turnover(df):
     )
     por_depto.columns = ["departamento", "turnover_pct"]
     
+    # traduz os nomes dos departamentos
+    por_depto["departamento"] = por_depto["departamento"].map(DEPARTAMENTOS)
+    
     return taxa, saidas, total, por_depto
 
 
 def calcular_diversidade(df):
     # distribuição de gênero geral
     genero = df["Gender"].value_counts(normalize=True).mul(100).round(2)
+    
+    # traduz os valores de gênero
+    genero.index = genero.index.map(GENERO)
     
     # distribuição de gênero por nível hierárquico
     genero_por_nivel = (
@@ -71,6 +90,9 @@ def calcular_absenteismo(df):
         .reset_index()
     )
     por_depto.columns = ["departamento", "taxa_media"]
+    
+    # traduz os nomes dos departamentos
+    por_depto["departamento"] = por_depto["departamento"].map(DEPARTAMENTOS)
     
     return media, por_depto
 
