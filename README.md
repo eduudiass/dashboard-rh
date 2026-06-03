@@ -18,7 +18,7 @@ O projeto usa o dataset IBM HR Analytics como base. Como o dataset não possui s
 
 ## Tecnologias
 
-- Python 3
+- Python 
 - Pandas
 - NumPy
 - Plotly
