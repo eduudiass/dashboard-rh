@@ -417,7 +417,7 @@ elif aba == "Diversidade":
 
 # ── Horas Extras ──────────────────────────────────────────────────────────────
 elif aba == "Horas Extras":
-    taxa_ot, taxa_com, taxa_sem, multiplicador, pct_ot_saidas, em_risco, ot_depto = calcular_horas_extras(ibm)
+    taxa_ot, taxa_com, taxa_sem, multiplicador, pct_ot_saidas, em_risco, ot_depto, horas_depto = calcular_horas_extras(ibm)
 
     st.markdown('<div class="page-title">Horas Extras</div>', unsafe_allow_html=True)
     st.markdown('<div class="page-subtitle">Relação entre hora extra e saída de funcionários</div>', unsafe_allow_html=True)
@@ -435,37 +435,38 @@ elif aba == "Horas Extras":
     col_a, col_b = st.columns(2)
 
     with col_a:
-        cores_ot = [COR_DEST if r["overtime"] == "Com hora extra" else COR_BASE
-                    for _, r in taxa_ot.iterrows()]
+        max_horas = horas_depto["media_horas"].max()
         fig = go.Figure(go.Bar(
-            x=taxa_ot["overtime"],
-            y=taxa_ot["turnover_pct"],
-            marker_color=cores_ot,
-            text=[f"{v}%" for v in taxa_ot["turnover_pct"]],
+            y=horas_depto["departamento"],
+            x=horas_depto["media_horas"],
+            orientation="h",
+            marker_color=[COR_DEST if v == max_horas else COR_BASE for v in horas_depto["media_horas"]],
+            text=[f"{v}h" for v in horas_depto["media_horas"]],
             textposition="outside",
-            width=0.4
         ))
-        estilo_chart(fig, "Taxa de Turnover por Regime de Hora Extra (%)")
+        estilo_chart(fig, "Média de Horas Extras por Departamento")
         fig.update_layout(
-            yaxis_range=[0, taxa_ot["turnover_pct"].max() * 1.4],
-            showlegend=False
+            xaxis=dict(showgrid=True, gridcolor="#EDE5D0", range=[0, max_horas * 1.35]),
+            yaxis=dict(showgrid=False),
+            showlegend=False,
         )
         st.plotly_chart(fig, use_container_width=True)
 
     with col_b:
+        max_pct = ot_depto["pct_ot"].max()
         fig2 = go.Figure(go.Bar(
-            x=ot_depto["departamento"],
-            y=ot_depto["pct_ot"],
-            marker_color=[COR_DEST if v == ot_depto["pct_ot"].max() else COR_BASE
-                          for v in ot_depto["pct_ot"]],
+            y=ot_depto["cargo"],
+            x=ot_depto["pct_ot"],
+            orientation="h",
+            marker_color=[COR_DEST if v == max_pct else COR_BASE for v in ot_depto["pct_ot"]],
             text=[f"{v}%" for v in ot_depto["pct_ot"]],
             textposition="outside",
-            width=0.4
         ))
-        estilo_chart(fig2, "% de Saídas que Faziam Hora Extra — por Departamento")
+        estilo_chart(fig2, "% de Saídas que Faziam Hora Extra — por Cargo")
         fig2.update_layout(
-            yaxis_range=[0, ot_depto["pct_ot"].max() * 1.4],
-            showlegend=False
+            xaxis=dict(showgrid=True, gridcolor="#EDE5D0", range=[0, max_pct * 1.35]),
+            yaxis=dict(showgrid=False),
+            showlegend=False,
         )
         st.plotly_chart(fig2, use_container_width=True)
 

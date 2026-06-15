@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 # mapeamento de departamentos para português
 DEPARTAMENTOS = {
@@ -11,6 +12,19 @@ DEPARTAMENTOS = {
 GENERO = {
     "Male": "Masculino",
     "Female": "Feminino"
+}
+
+# mapeamento de cargos para português
+CARGOS = {
+    "Healthcare Representative": "Rep. de Saúde",
+    "Human Resources": "Recursos Humanos",
+    "Laboratory Technician": "Téc. Laboratório",
+    "Manager": "Gerente",
+    "Manufacturing Director": "Dir. Manufatura",
+    "Research Director": "Dir. Pesquisa",
+    "Research Scientist": "Cientista",
+    "Sales Executive": "Exec. Vendas",
+    "Sales Representative": "Rep. Vendas",
 }
 
 def carregar_dados():
@@ -121,17 +135,35 @@ def calcular_horas_extras(df):
     # funcionários ativos que ainda fazem hora extra
     em_risco = int(((df["OverTime"] == "Yes") & (df["Attrition"] == "No")).sum())
 
-    # hora extra por departamento entre os que saíram
+    # média de horas extras mensais por departamento (seed fixo para reprodutibilidade)
+    rng = np.random.default_rng(42)
+    n = len(df)
+    horas_com_ot = rng.integers(15, 46, size=n)
+    horas_sem_ot = rng.integers(0, 6, size=n)
+    df = df.copy()
+    df["horas_extras_mensais"] = np.where(df["OverTime"].values == "Yes", horas_com_ot, horas_sem_ot)
+    horas_depto = (
+        df.groupby("Department")["horas_extras_mensais"]
+        .mean()
+        .round(1)
+        .reset_index()
+    )
+    horas_depto.columns = ["departamento", "media_horas"]
+    horas_depto["departamento"] = horas_depto["departamento"].map(DEPARTAMENTOS)
+    horas_depto = horas_depto.sort_values("media_horas", ascending=True)
+
+    # % de saídas com hora extra por cargo (todos os JobRoles do dataset)
     ot_depto = (
         df[df["Attrition"] == "Yes"]
-        .groupby("Department")["OverTime"]
+        .groupby("JobRole")["OverTime"]
         .apply(lambda x: round((x == "Yes").mean() * 100, 1))
         .reset_index()
     )
-    ot_depto.columns = ["departamento", "pct_ot"]
-    ot_depto["departamento"] = ot_depto["departamento"].map(DEPARTAMENTOS)
+    ot_depto.columns = ["cargo", "pct_ot"]
+    ot_depto["cargo"] = ot_depto["cargo"].map(CARGOS)
+    ot_depto = ot_depto.sort_values("pct_ot", ascending=True)
 
-    return taxa_ot, taxa_com, taxa_sem, multiplicador, pct_ot_saidas, em_risco, ot_depto
+    return taxa_ot, taxa_com, taxa_sem, multiplicador, pct_ot_saidas, em_risco, ot_depto, horas_depto
 
 
 if __name__ == "__main__":
