@@ -98,6 +98,14 @@ html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
     margin: 24px 0;
 }
 
+/* Selectbox do filtro na sidebar */
+[data-testid="stSidebar"] [data-baseweb="select"] > div {
+    background-color: rgba(214,204,186,0.08) !important;
+    border-color: rgba(214,204,186,0.2) !important;
+    border-radius: 6px !important;
+}
+[data-testid="stSidebar"] [data-baseweb="select"] svg { fill: #A8C4AF !important; }
+
 #MainMenu, footer, header { visibility: hidden; }
 </style>
 """, unsafe_allow_html=True)
@@ -147,7 +155,21 @@ with st.sidebar:
     )
 
     st.markdown("""
-    <div style="margin-top:40px;padding:0 16px;">
+    <div style="margin-top:24px;padding:0 16px 8px 16px;border-top:1px solid rgba(214,204,186,0.15);padding-top:20px;">
+        <div style="font-size:10px;font-weight:600;color:#6B9B7A;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;">Departamento</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    DEPTOS = {
+        "Todos": None,
+        "Recursos Humanos": "Human Resources",
+        "Pesquisa e Desenvolvimento": "Research & Development",
+        "Vendas": "Sales",
+    }
+    depto_sel = st.selectbox("depto", list(DEPTOS.keys()), label_visibility="collapsed")
+
+    st.markdown("""
+    <div style="margin-top:32px;padding:0 16px;">
         <div style="font-size:11px;color:#6B7D6E;line-height:1.8">
             Desenvolvido por<br>
             <a href="https://linkedin.com/in/eduardodiasds" style="color:#A8C4AF;text-decoration:none;font-weight:500">Eduardo Dias</a>
@@ -157,6 +179,10 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
 
+
+# aplica filtro de departamento
+if DEPTOS[depto_sel]:
+    ibm = ibm[ibm["Department"] == DEPTOS[depto_sel]]
 
 # verde floresta — mesma identidade do portfólio
 COR_BASE   = "#2D5A3D"
