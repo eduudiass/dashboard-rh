@@ -9,7 +9,6 @@ from metrics import carregar_dados, calcular_turnover, calcular_diversidade, cal
 
 st.set_page_config(
     page_title="Dashboard RH",
-    page_icon="👥",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -20,46 +19,40 @@ st.markdown("""
 
 html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
 
-/* Fundo principal */
-.stApp { background-color: #F0F4F8; }
-[data-testid="stAppViewContainer"] { background-color: #F0F4F8; }
-[data-testid="stMain"] { background-color: #F0F4F8; }
-section.main { background-color: #F0F4F8; }
-.block-container { padding-top: 2rem !important; padding-bottom: 2rem !important; }
-
-/* Sidebar */
-[data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #0D1B2A 0%, #1B3A5C 100%) !important;
+.stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], section.main {
+    background-color: #F9FAFB !important;
 }
-[data-testid="stSidebar"] * { color: #CBD5E1 !important; }
+.block-container { padding-top: 2.5rem !important; padding-bottom: 2rem !important; }
 
-/* Navegação da sidebar: remove os bullets e estiliza como menu */
-[data-testid="stSidebar"] [role="radiogroup"] { gap: 4px; }
+/* Sidebar clara */
+[data-testid="stSidebar"] {
+    background: #F1F5F9 !important;
+    border-right: 1px solid #E2E8F0 !important;
+}
+[data-testid="stSidebar"] * { color: #0F172A !important; }
+
+/* Remove círculo do radio e estiliza como menu */
+[data-testid="stSidebar"] [data-baseweb="radio"] > div:first-child { display: none !important; }
+[data-testid="stSidebar"] [role="radiogroup"] { gap: 2px; }
 [data-testid="stSidebar"] label[data-baseweb="radio"] {
-    background: transparent !important;
-    padding: 8px 12px;
-    border-radius: 8px;
-    transition: background 0.15s;
+    padding: 9px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background 0.1s;
     cursor: pointer;
 }
 [data-testid="stSidebar"] label[data-baseweb="radio"]:hover {
-    background: rgba(255,255,255,0.08) !important;
+    background: #E2E8F0 !important;
 }
-[data-testid="stSidebar"] [aria-checked="true"] label[data-baseweb="radio"],
-[data-testid="stSidebar"] label[data-baseweb="radio"][aria-checked="true"] {
-    background: rgba(255,255,255,0.12) !important;
-}
-/* Esconde o círculo do radio button */
-[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] + div [role="radio"] { display: none !important; }
-[data-testid="stSidebar"] [data-baseweb="radio"] > div:first-child { display: none !important; }
 
-/* KPI Cards */
+/* KPI Cards — sem borda colorida, só sombra limpa */
 .kpi-card {
-    background: white;
-    border-radius: 12px;
-    padding: 20px 22px 16px 22px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06);
-    border-top: 3px solid #2563EB;
+    background: #FFFFFF;
+    border-radius: 8px;
+    padding: 22px 24px 18px 24px;
+    border: 1px solid #E2E8F0;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
     height: 100%;
 }
 .kpi-label {
@@ -67,14 +60,15 @@ section.main { background-color: #F0F4F8; }
     font-weight: 600;
     color: #94A3B8;
     text-transform: uppercase;
-    letter-spacing: 0.8px;
+    letter-spacing: 1px;
     margin-bottom: 10px;
 }
 .kpi-value {
-    font-size: 32px;
+    font-size: 34px;
     font-weight: 700;
-    color: #0F2944;
+    color: #0F172A;
     line-height: 1;
+    font-variant-numeric: tabular-nums;
 }
 .kpi-sub {
     font-size: 11px;
@@ -83,34 +77,32 @@ section.main { background-color: #F0F4F8; }
 }
 
 .page-title {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 700;
-    color: #0F2944;
+    color: #0F172A;
     margin-bottom: 2px;
 }
 .page-subtitle {
-    font-size: 13px;
+    font-size: 12px;
     color: #94A3B8;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+    letter-spacing: 0.2px;
 }
 .section-divider {
     border: none;
-    border-top: 1px solid #E2E8F0;
-    margin: 20px 0;
+    border-top: 1px solid #F1F5F9;
+    margin: 24px 0;
 }
-
-/* Plotly charts: remove borda padrão */
-.js-plotly-plot { border-radius: 12px; }
 
 #MainMenu, footer, header { visibility: hidden; }
 </style>
 """, unsafe_allow_html=True)
 
 
-def kpi(label, value, sub="", accent="#2563EB"):
+def kpi(label, value, sub=""):
     sub_html = f'<div class="kpi-sub">{sub}</div>' if sub else ""
     st.markdown(f"""
-    <div class="kpi-card" style="border-top-color:{accent}">
+    <div class="kpi-card">
         <div class="kpi-label">{label}</div>
         <div class="kpi-value">{value}</div>
         {sub_html}
@@ -119,15 +111,16 @@ def kpi(label, value, sub="", accent="#2563EB"):
 
 def estilo_chart(fig, title="", show_legend=False):
     fig.update_layout(
-        title=dict(text=title, font=dict(size=15, color="#0F2944"), x=0, xanchor="left"),
-        plot_bgcolor="white",
-        paper_bgcolor="white",
-        font=dict(family="Inter, sans-serif", color="#374151", size=12),
-        margin=dict(t=50, b=20, l=10, r=10),
+        title=dict(text=title, font=dict(size=14, color="#0F172A", family="Inter, sans-serif"), x=0, xanchor="left"),
+        plot_bgcolor="#FFFFFF",
+        paper_bgcolor="#FFFFFF",
+        font=dict(family="Inter, sans-serif", color="#64748B", size=12),
+        margin=dict(t=48, b=16, l=10, r=10),
         showlegend=show_legend,
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-        xaxis=dict(showgrid=False, linecolor="#E2E8F0", tickcolor="#E2E8F0"),
-        yaxis=dict(gridcolor="#F1F5F9", linecolor="white"),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1,
+                    font=dict(size=12, color="#64748B")),
+        xaxis=dict(showgrid=False, linecolor="#F1F5F9", tickcolor="#F1F5F9", tickfont=dict(color="#94A3B8")),
+        yaxis=dict(gridcolor="#F8FAFC", linecolor="white", tickfont=dict(color="#94A3B8")),
     )
     return fig
 
@@ -137,12 +130,10 @@ ibm, movimentacao = carregar_dados()
 # ── Sidebar ──────────────────────────────────────────────────────────────────
 with st.sidebar:
     st.markdown("""
-    <div style="padding:24px 0 20px 0;text-align:center;">
-        <div style="font-size:36px">👥</div>
-        <div style="font-size:17px;font-weight:700;color:white;margin-top:8px">Dashboard RH</div>
-        <div style="font-size:11px;color:#64748B;margin-top:4px;letter-spacing:0.5px">ANÁLISE DE PESSOAS</div>
+    <div style="padding:28px 16px 20px 16px; border-bottom:1px solid #E2E8F0; margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:700;color:#94A3B8;letter-spacing:2px;text-transform:uppercase;">Recursos Humanos</div>
+        <div style="font-size:19px;font-weight:700;color:#0F172A;margin-top:4px;">Dashboard</div>
     </div>
-    <hr style="border-color:#1E4976;margin-bottom:12px">
     """, unsafe_allow_html=True)
 
     aba = st.radio(
@@ -152,15 +143,22 @@ with st.sidebar:
     )
 
     st.markdown("""
-    <div style="margin-top:40px;padding:0 8px;text-align:center;">
-        <div style="font-size:11px;color:#475569;line-height:1.8">
+    <div style="margin-top:40px;padding:0 16px;">
+        <div style="font-size:11px;color:#94A3B8;line-height:1.8">
             Desenvolvido por<br>
-            <a href="https://linkedin.com/in/eduardodiasds" style="color:#93C5FD;text-decoration:none">Eduardo Dias</a>
+            <a href="https://linkedin.com/in/eduardodiasds" style="color:#475569;text-decoration:none;font-weight:500">Eduardo Dias</a>
             &nbsp;·&nbsp;
-            <a href="https://github.com/eduudiass" style="color:#93C5FD;text-decoration:none">GitHub</a>
+            <a href="https://github.com/eduudiass" style="color:#475569;text-decoration:none;font-weight:500">GitHub</a>
         </div>
     </div>
     """, unsafe_allow_html=True)
+
+
+# cores base: slate escuro para todos, slate-900 para o destaque
+COR_BASE   = "#475569"
+COR_DEST   = "#0F172A"
+COR_LINHA1 = "#334155"
+COR_LINHA2 = "#94A3B8"
 
 
 # ── Visão Geral ──────────────────────────────────────────────────────────────
@@ -173,22 +171,21 @@ if aba == "Visão Geral":
 
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        kpi("Total de Funcionários", f"{total:,}", accent="#2563EB")
+        kpi("Total de Funcionários", f"{total:,}")
     with col2:
-        kpi("Desligamentos", saidas, accent="#DC2626")
+        kpi("Desligamentos", saidas)
     with col3:
         alerta = "acima do limite recomendado" if taxa > 10 else "dentro do esperado"
-        cor_taxa = "#DC2626" if taxa > 10 else "#16A34A"
-        kpi("Turnover Geral", f"{taxa}%", alerta, accent=cor_taxa)
+        kpi("Turnover Geral", f"{taxa}%", alerta)
     with col4:
-        kpi("Absenteísmo Médio", f"{media_abs}%", "dias ausentes / dias úteis", accent="#F59E0B")
+        kpi("Absenteísmo Médio", f"{media_abs}%", "dias ausentes / dias úteis")
 
     st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 
     col_a, col_b = st.columns(2)
 
     with col_a:
-        cores = ["#DC2626" if v == turnover_depto["turnover_pct"].max() else "#2563EB"
+        cores = [COR_DEST if v == turnover_depto["turnover_pct"].max() else COR_BASE
                  for v in turnover_depto["turnover_pct"]]
         fig = go.Figure(go.Bar(
             x=turnover_depto["departamento"],
@@ -206,13 +203,13 @@ if aba == "Visão Geral":
         fig = go.Figure()
         fig.add_trace(go.Scatter(
             x=movimentacao["data"], y=movimentacao["admissoes"],
-            name="Admissões", line=dict(color="#16A34A", width=2.5),
-            fill="tozeroy", fillcolor="rgba(22,163,74,0.07)"
+            name="Admissões", line=dict(color=COR_LINHA1, width=2),
+            fill="tozeroy", fillcolor="rgba(51,65,85,0.05)"
         ))
         fig.add_trace(go.Scatter(
             x=movimentacao["data"], y=movimentacao["desligamentos"],
-            name="Desligamentos", line=dict(color="#DC2626", width=2.5),
-            fill="tozeroy", fillcolor="rgba(220,38,38,0.06)"
+            name="Desligamentos", line=dict(color=COR_LINHA2, width=2, dash="dot"),
+            fill="tozeroy", fillcolor="rgba(148,163,184,0.04)"
         ))
         estilo_chart(fig, "Movimentação Mensal", show_legend=True)
         st.plotly_chart(fig, use_container_width=True)
@@ -227,17 +224,17 @@ elif aba == "Turnover":
 
     col1, col2, col3 = st.columns(3)
     with col1:
-        cor = "#DC2626" if taxa > 10 else "#16A34A"
-        kpi("Turnover Geral", f"{taxa}%", "acima de 10% é crítico" if taxa > 10 else "dentro do esperado", accent=cor)
+        alerta = "acima de 10% é crítico" if taxa > 10 else "dentro do esperado"
+        kpi("Turnover Geral", f"{taxa}%", alerta)
     with col2:
-        kpi("Total de Saídas", saidas, accent="#DC2626")
+        kpi("Total de Saídas", saidas)
     with col3:
-        kpi("Força de Trabalho", f"{total:,}", accent="#2563EB")
+        kpi("Força de Trabalho", f"{total:,}")
 
     st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 
     max_val = turnover_depto["turnover_pct"].max()
-    cores = ["#DC2626" if v == max_val else "#2563EB" for v in turnover_depto["turnover_pct"]]
+    cores = [COR_DEST if v == max_val else COR_BASE for v in turnover_depto["turnover_pct"]]
 
     fig = go.Figure(go.Bar(
         x=turnover_depto["departamento"],
@@ -263,25 +260,24 @@ elif aba == "Admissões e Desligamentos":
 
     col1, col2, col3 = st.columns(3)
     with col1:
-        kpi("Total de Admissões", f"{total_adm:,}", accent="#16A34A")
+        kpi("Total de Admissões", f"{total_adm:,}")
     with col2:
-        kpi("Total de Desligamentos", f"{total_des:,}", accent="#DC2626")
+        kpi("Total de Desligamentos", f"{total_des:,}")
     with col3:
-        cor_saldo = "#16A34A" if saldo >= 0 else "#DC2626"
-        kpi("Saldo de Pessoal", f"+{saldo}" if saldo >= 0 else str(saldo), accent=cor_saldo)
+        kpi("Saldo de Pessoal", f"+{saldo}" if saldo >= 0 else str(saldo))
 
     st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 
     fig = go.Figure()
     fig.add_trace(go.Scatter(
         x=movimentacao["data"], y=movimentacao["admissoes"],
-        name="Admissões", line=dict(color="#16A34A", width=2.5),
-        fill="tozeroy", fillcolor="rgba(22,163,74,0.07)"
+        name="Admissões", line=dict(color=COR_LINHA1, width=2),
+        fill="tozeroy", fillcolor="rgba(51,65,85,0.05)"
     ))
     fig.add_trace(go.Scatter(
         x=movimentacao["data"], y=movimentacao["desligamentos"],
-        name="Desligamentos", line=dict(color="#DC2626", width=2.5),
-        fill="tozeroy", fillcolor="rgba(220,38,38,0.06)"
+        name="Desligamentos", line=dict(color=COR_LINHA2, width=2, dash="dot"),
+        fill="tozeroy", fillcolor="rgba(148,163,184,0.04)"
     ))
     estilo_chart(fig, "Movimentação Mensal de Pessoal", show_legend=True)
     st.plotly_chart(fig, use_container_width=True)
@@ -296,15 +292,15 @@ elif aba == "Absenteísmo":
 
     col1, col2, col3 = st.columns([1, 1, 2])
     with col1:
-        kpi("Taxa Média Geral", f"{media_abs}%", "ausências / dias úteis", accent="#F59E0B")
+        kpi("Taxa Média Geral", f"{media_abs}%", "ausências / dias úteis")
     with col2:
         depto_critico = abs_depto.loc[abs_depto["taxa_media"].idxmax(), "departamento"]
-        kpi("Maior Absenteísmo", depto_critico, "departamento de atenção", accent="#DC2626")
+        kpi("Maior Absenteísmo", depto_critico, "departamento de atenção")
 
     st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 
     max_abs = abs_depto["taxa_media"].max()
-    cores = ["#DC2626" if v == max_abs else "#F59E0B" for v in abs_depto["taxa_media"]]
+    cores = [COR_DEST if v == max_abs else COR_BASE for v in abs_depto["taxa_media"]]
 
     fig = go.Figure(go.Bar(
         x=abs_depto["departamento"],
@@ -332,19 +328,19 @@ elif aba == "Diversidade":
         fig_genero = go.Figure(go.Pie(
             labels=genero.index,
             values=genero.values,
-            marker=dict(colors=["#2563EB", "#EC4899"]),
+            marker=dict(colors=[COR_DEST, COR_BASE]),
             hole=0.5,
             textinfo="label+percent",
             textfont_size=13,
             hovertemplate="%{label}: %{value}%<extra></extra>"
         ))
         fig_genero.update_layout(
-            title=dict(text="Distribuição de Gênero", font=dict(size=15, color="#0F2944"), x=0),
+            title=dict(text="Distribuição de Gênero", font=dict(size=14, color="#0F172A", family="Inter, sans-serif"), x=0),
             plot_bgcolor="white",
             paper_bgcolor="white",
-            font=dict(family="Inter, sans-serif"),
+            font=dict(family="Inter, sans-serif", color="#64748B"),
             showlegend=False,
-            margin=dict(t=50, b=20, l=20, r=20),
+            margin=dict(t=48, b=16, l=20, r=20),
         )
         st.plotly_chart(fig_genero, use_container_width=True)
 
@@ -355,7 +351,7 @@ elif aba == "Diversidade":
         fig_faixa = go.Figure(go.Bar(
             x=faixa_df["faixa_etaria"].astype(str),
             y=faixa_df["quantidade"],
-            marker_color="#2563EB",
+            marker_color=COR_BASE,
             text=faixa_df["quantidade"],
             textposition="outside",
             width=0.5
@@ -379,15 +375,11 @@ elif aba == "Diversidade":
         y="pct",
         color="genero",
         barmode="group",
-        color_discrete_map={"Masculino": "#2563EB", "Feminino": "#EC4899"},
+        color_discrete_map={"Masculino": COR_DEST, "Feminino": COR_BASE},
         text=genero_nivel["pct"].apply(lambda v: f"{v}%"),
         category_orders={"nivel_label": ["Júnior", "Pleno", "Sênior", "Especialista", "Gestão"]}
     )
     estilo_chart(fig_nivel, "Representatividade de Gênero por Nível Hierárquico (%)", show_legend=True)
-    fig_nivel.update_layout(
-        xaxis_title="Nível",
-        yaxis_title="Percentual (%)",
-        legend_title="Gênero"
-    )
+    fig_nivel.update_layout(xaxis_title="Nível", yaxis_title="Percentual (%)", legend_title="Gênero")
     fig_nivel.update_traces(textposition="outside")
     st.plotly_chart(fig_nivel, use_container_width=True)
