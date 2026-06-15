@@ -481,5 +481,5 @@ elif aba == "Horas Extras":
         textposition="outside", width=0.35
     ))
     estilo_chart(fig3, f"Composição das Saídas — {pct_ot_saidas}% dos que saíram faziam hora extra")
-    fig3.update_layout(yaxis_range=[0, 120], showlegend=False)
+    fig3.update_layout(yaxis_range=[0, 100], showlegend=False)
     st.plotly_chart(fig3, use_container_width=True)
