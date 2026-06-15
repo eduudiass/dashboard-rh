@@ -6,13 +6,13 @@ Dashboard para análise de dados de pessoas construído com Python e Streamlit. 
 
 ## Funcionalidades
 
-- **Visão Geral** — headcount, saídas, turnover e absenteísmo em um resumo executivo
-- **Turnover** — taxa de rotatividade por departamento com destaque para o pior índice
-- **Admissões e Desligamentos** — movimentação mensal ao longo de 24 meses
-- **Absenteísmo** — taxa média geral e por departamento
-- **Diversidade** — distribuição de gênero, faixa etária e representatividade por nível hierárquico
-- **Horas Extras** — relação entre hora extra e saída: quem faz hora extra tem 2.9× mais chance de sair
-- **Filtro por departamento** — todos os indicadores respondem ao filtro na sidebar
+- **Visão Geral**: headcount, saídas, turnover e absenteísmo em um resumo executivo
+- **Turnover**: taxa de rotatividade por departamento com destaque para o pior índice
+- **Admissões e Desligamentos**: movimentação mensal ao longo de 24 meses
+- **Absenteísmo**: taxa média geral e por departamento
+- **Diversidade**:distribuição de gênero, faixa etária e representatividade por nível hierárquico
+- **Horas Extras**:relação entre hora extra e saída: quem faz hora extra tem 2.9× mais chance de sair
+- **Filtro por departamento**: todos os indicadores respondem ao filtro na sidebar
 
 ## Sobre os dados
 
