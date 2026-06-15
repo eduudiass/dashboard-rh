@@ -2,7 +2,7 @@
 
 [Acessar Dashboard](https://dashboard-rh-eduardo.streamlit.app/)
 
-Dashboard para análise de dados de pessoas construído com Python e Streamlit. Cobre as principais métricas de RH — turnover, movimentação, absenteísmo, diversidade e horas extras. Com filtro por departamento e visual inspirado no meu portfólio pessoal.
+Dashboard para análise de dados de pessoas construído com Python e Streamlit. Cobre as principais métricas de RH, como turnover, movimentação, absenteísmo, diversidade e horas extras. Com filtro por departamento e visual inspirado no meu portfólio pessoal.
 
 ## Funcionalidades
 
