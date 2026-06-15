@@ -61,6 +61,6 @@ O projeto usa o [IBM HR Analytics Dataset](https://www.kaggle.com/datasets/pavan
 
 ## Autor
 
-Eduardo Dias — Estudante de Data Science & AI na PUCRS
+Eduardo Dias, Estudante de Data Science & AI na PUCRS
 
 [LinkedIn](https://linkedin.com/in/eduardodiasds) | [GitHub](https://github.com/eduudiass)
