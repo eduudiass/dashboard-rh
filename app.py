@@ -18,30 +18,47 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-html, body, [class*="css"] {
-    font-family: 'Inter', sans-serif;
-}
+html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
 
-.main .block-container {
-    background-color: #F0F4F8;
-    padding-top: 1.5rem;
-    padding-bottom: 2rem;
-}
+/* Fundo principal */
+.stApp { background-color: #F0F4F8; }
+[data-testid="stAppViewContainer"] { background-color: #F0F4F8; }
+[data-testid="stMain"] { background-color: #F0F4F8; }
+section.main { background-color: #F0F4F8; }
+.block-container { padding-top: 2rem !important; padding-bottom: 2rem !important; }
 
+/* Sidebar */
 [data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #0D1B2A 0%, #1B3A5C 100%);
+    background: linear-gradient(180deg, #0D1B2A 0%, #1B3A5C 100%) !important;
 }
-[data-testid="stSidebar"] label,
-[data-testid="stSidebar"] p,
-[data-testid="stSidebar"] span {
-    color: #CBD5E1 !important;
-}
+[data-testid="stSidebar"] * { color: #CBD5E1 !important; }
 
+/* Navegação da sidebar: remove os bullets e estiliza como menu */
+[data-testid="stSidebar"] [role="radiogroup"] { gap: 4px; }
+[data-testid="stSidebar"] label[data-baseweb="radio"] {
+    background: transparent !important;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: background 0.15s;
+    cursor: pointer;
+}
+[data-testid="stSidebar"] label[data-baseweb="radio"]:hover {
+    background: rgba(255,255,255,0.08) !important;
+}
+[data-testid="stSidebar"] [aria-checked="true"] label[data-baseweb="radio"],
+[data-testid="stSidebar"] label[data-baseweb="radio"][aria-checked="true"] {
+    background: rgba(255,255,255,0.12) !important;
+}
+/* Esconde o círculo do radio button */
+[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] + div [role="radio"] { display: none !important; }
+[data-testid="stSidebar"] [data-baseweb="radio"] > div:first-child { display: none !important; }
+
+/* KPI Cards */
 .kpi-card {
     background: white;
     border-radius: 12px;
     padding: 20px 22px 16px 22px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06);
     border-top: 3px solid #2563EB;
     height: 100%;
 }
@@ -81,6 +98,9 @@ html, body, [class*="css"] {
     border-top: 1px solid #E2E8F0;
     margin: 20px 0;
 }
+
+/* Plotly charts: remove borda padrão */
+.js-plotly-plot { border-radius: 12px; }
 
 #MainMenu, footer, header { visibility: hidden; }
 </style>
