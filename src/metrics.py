@@ -68,7 +68,8 @@ def calcular_diversidade(df):
         .reset_index()
     )
     genero_por_nivel.columns = ["nivel", "genero", "pct"]
-    
+    genero_por_nivel["genero"] = genero_por_nivel["genero"].map(GENERO)
+
     # faixa etária
     bins = [18, 25, 35, 45, 55, 65]
     labels = ["18-25", "26-35", "36-45", "46-55", "56-65"]
