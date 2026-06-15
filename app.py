@@ -111,6 +111,7 @@ html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
 """, unsafe_allow_html=True)
 
 
+# renderiza um card de indicador com label, valor principal e subtítulo opcional
 def kpi(label, value, sub=""):
     sub_html = f'<div class="kpi-sub">{sub}</div>' if sub else ""
     st.markdown(f"""
@@ -121,6 +122,7 @@ def kpi(label, value, sub=""):
     </div>""", unsafe_allow_html=True)
 
 
+# aplica a identidade visual padrão em qualquer figura Plotly
 def estilo_chart(fig, title="", show_legend=False):
     fig.update_layout(
         title=dict(text=title, font=dict(size=14, color="#1A1A1A", family="Playfair Display, serif"), x=0, xanchor="left"),
@@ -137,6 +139,7 @@ def estilo_chart(fig, title="", show_legend=False):
     return fig
 
 
+# carrega os dados uma vez ao iniciar o app
 ibm, movimentacao = carregar_dados()
 
 # ── Sidebar ──────────────────────────────────────────────────────────────────
@@ -199,6 +202,7 @@ if aba == "Visão Geral":
     st.markdown('<div class="page-title">Visão Geral</div>', unsafe_allow_html=True)
     st.markdown('<div class="page-subtitle">Resumo executivo dos principais indicadores de RH</div>', unsafe_allow_html=True)
 
+    # KPI cards do topo
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         kpi("Total de Funcionários", f"{total:,}")
@@ -212,9 +216,11 @@ if aba == "Visão Geral":
 
     st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 
+    # gráfico de barras de turnover e linha de movimentação mensal
     col_a, col_b = st.columns(2)
 
     with col_a:
+        # destaca o departamento com maior turnover
         cores = [COR_DEST if v == turnover_depto["turnover_pct"].max() else COR_BASE
                  for v in turnover_depto["turnover_pct"]]
         fig = go.Figure(go.Bar(
@@ -263,6 +269,7 @@ elif aba == "Turnover":
 
     st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 
+    # destaca o departamento com maior turnover
     max_val = turnover_depto["turnover_pct"].max()
     cores = [COR_DEST if v == max_val else COR_BASE for v in turnover_depto["turnover_pct"]]
 
@@ -281,6 +288,7 @@ elif aba == "Turnover":
 
 # ── Admissões e Desligamentos ─────────────────────────────────────────────────
 elif aba == "Admissões e Desligamentos":
+    # soma os totais do período e calcula o saldo
     total_adm = int(movimentacao["admissoes"].sum())
     total_des = int(movimentacao["desligamentos"].sum())
     saldo = total_adm - total_des
@@ -324,6 +332,7 @@ elif aba == "Absenteísmo":
     with col1:
         kpi("Taxa Média Geral", f"{media_abs}%", "ausências / dias úteis")
     with col2:
+        # encontra o departamento com pior índice de absenteísmo
         depto_critico = abs_depto.loc[abs_depto["taxa_media"].idxmax(), "departamento"]
         kpi("Maior Absenteísmo", depto_critico, "departamento de atenção")
 
@@ -355,6 +364,7 @@ elif aba == "Diversidade":
     col1, col2 = st.columns(2)
 
     with col1:
+        # gráfico de rosca para distribuição de gênero
         fig_genero = go.Figure(go.Pie(
             labels=genero.index,
             values=genero.values,
@@ -375,6 +385,7 @@ elif aba == "Diversidade":
         st.plotly_chart(fig_genero, use_container_width=True)
 
     with col2:
+        # bar chart de quantidade por faixa etária
         faixa_df = faixa.reset_index()
         faixa_df.columns = ["faixa_etaria", "quantidade"]
 
@@ -396,6 +407,7 @@ elif aba == "Diversidade":
 
     st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 
+    # traduz os níveis numéricos para labels legíveis
     nivel_map = {1: "Júnior", 2: "Pleno", 3: "Sênior", 4: "Especialista", 5: "Gestão"}
     genero_nivel["nivel_label"] = genero_nivel["nivel"].map(nivel_map)
 
@@ -432,6 +444,7 @@ elif aba == "Horas Extras":
 
     st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 
+    # gráficos de horas extras por departamento e por cargo
     col_a, col_b = st.columns(2)
 
     with col_a:
@@ -472,6 +485,7 @@ elif aba == "Horas Extras":
 
     st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 
+    # composição das saídas: quanto dos demitidos faziam hora extra
     pct_ot_ficaram = round(100 - pct_ot_saidas, 1)
     fig3 = go.Figure()
     fig3.add_trace(go.Bar(

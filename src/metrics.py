@@ -113,6 +113,7 @@ def calcular_absenteismo(df):
 
 
 def calcular_horas_extras(df):
+    # rótulos em português para o campo OverTime
     OT_MAP = {"Yes": "Com hora extra", "No": "Sem hora extra"}
 
     # taxa de turnover por grupo de hora extra
@@ -124,6 +125,7 @@ def calcular_horas_extras(df):
     taxa_ot.columns = ["overtime", "turnover_pct"]
     taxa_ot["overtime"] = taxa_ot["overtime"].map(OT_MAP)
 
+    # extrai os valores individuais e calcula o risco relativo
     taxa_com = taxa_ot.loc[taxa_ot["overtime"] == "Com hora extra", "turnover_pct"].values[0]
     taxa_sem = taxa_ot.loc[taxa_ot["overtime"] == "Sem hora extra", "turnover_pct"].values[0]
     multiplicador = round(taxa_com / taxa_sem, 1) if taxa_sem > 0 else 0
