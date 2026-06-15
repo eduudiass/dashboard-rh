@@ -15,23 +15,27 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap');
 
 html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
 
+/* Fundo creme com textura de grid — igual ao portfólio */
 .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], section.main {
-    background-color: #F9FAFB !important;
+    background-color: #F5F0E4 !important;
+    background-image:
+        linear-gradient(rgba(150,130,100,0.10) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(150,130,100,0.10) 1px, transparent 1px) !important;
+    background-size: 28px 28px !important;
 }
 .block-container { padding-top: 2.5rem !important; padding-bottom: 2rem !important; }
 
-/* Sidebar clara */
+/* Sidebar — verde escuro, mesma cor do botão do portfólio */
 [data-testid="stSidebar"] {
-    background: #F1F5F9 !important;
-    border-right: 1px solid #E2E8F0 !important;
+    background: #1A3D2B !important;
+    border-right: none !important;
 }
-[data-testid="stSidebar"] * { color: #0F172A !important; }
+[data-testid="stSidebar"] * { color: #D6CCBA !important; }
 
-/* Remove círculo do radio e estiliza como menu */
 [data-testid="stSidebar"] [data-baseweb="radio"] > div:first-child { display: none !important; }
 [data-testid="stSidebar"] [role="radiogroup"] { gap: 2px; }
 [data-testid="stSidebar"] label[data-baseweb="radio"] {
@@ -40,57 +44,57 @@ html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
     font-size: 13px;
     font-weight: 500;
     transition: background 0.1s;
-    cursor: pointer;
 }
 [data-testid="stSidebar"] label[data-baseweb="radio"]:hover {
-    background: #E2E8F0 !important;
+    background: rgba(214,204,186,0.12) !important;
 }
 
-/* KPI Cards — sem borda colorida, só sombra limpa */
+/* KPI Cards — creme claro sobre o fundo texturizado */
 .kpi-card {
-    background: #FFFFFF;
-    border-radius: 8px;
+    background: #FBF8F1;
+    border-radius: 6px;
     padding: 22px 24px 18px 24px;
-    border: 1px solid #E2E8F0;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    border: 1px solid #DDD4BC;
     height: 100%;
 }
 .kpi-label {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
-    color: #94A3B8;
+    color: #8A7D65;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.2px;
     margin-bottom: 10px;
 }
 .kpi-value {
     font-size: 34px;
     font-weight: 700;
-    color: #0F172A;
+    color: #1A1A1A;
     line-height: 1;
-    font-variant-numeric: tabular-nums;
+    font-family: 'Playfair Display', serif;
 }
 .kpi-sub {
     font-size: 11px;
-    color: #94A3B8;
+    color: #8A7D65;
     margin-top: 8px;
 }
 
+/* Títulos com fonte serifada — igual ao portfólio */
 .page-title {
-    font-size: 20px;
+    font-size: 28px;
     font-weight: 700;
-    color: #0F172A;
+    color: #1A1A1A;
     margin-bottom: 2px;
+    font-family: 'Playfair Display', serif;
 }
 .page-subtitle {
     font-size: 12px;
-    color: #94A3B8;
+    color: #8A7D65;
     margin-bottom: 24px;
-    letter-spacing: 0.2px;
+    letter-spacing: 0.3px;
 }
 .section-divider {
     border: none;
-    border-top: 1px solid #F1F5F9;
+    border-top: 1px solid #DDD4BC;
     margin: 24px 0;
 }
 
@@ -111,16 +115,16 @@ def kpi(label, value, sub=""):
 
 def estilo_chart(fig, title="", show_legend=False):
     fig.update_layout(
-        title=dict(text=title, font=dict(size=14, color="#0F172A", family="Inter, sans-serif"), x=0, xanchor="left"),
-        plot_bgcolor="#FFFFFF",
-        paper_bgcolor="#FFFFFF",
-        font=dict(family="Inter, sans-serif", color="#64748B", size=12),
+        title=dict(text=title, font=dict(size=14, color="#1A1A1A", family="Playfair Display, serif"), x=0, xanchor="left"),
+        plot_bgcolor="#FBF8F1",
+        paper_bgcolor="#FBF8F1",
+        font=dict(family="Inter, sans-serif", color="#8A7D65", size=12),
         margin=dict(t=48, b=16, l=10, r=10),
         showlegend=show_legend,
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1,
-                    font=dict(size=12, color="#64748B")),
-        xaxis=dict(showgrid=False, linecolor="#F1F5F9", tickcolor="#F1F5F9", tickfont=dict(color="#94A3B8")),
-        yaxis=dict(gridcolor="#F8FAFC", linecolor="white", tickfont=dict(color="#94A3B8")),
+                    font=dict(size=12, color="#8A7D65")),
+        xaxis=dict(showgrid=False, linecolor="#DDD4BC", tickcolor="#DDD4BC", tickfont=dict(color="#8A7D65")),
+        yaxis=dict(gridcolor="#EDE5D0", linecolor="rgba(0,0,0,0)", tickfont=dict(color="#8A7D65")),
     )
     return fig
 
@@ -130,9 +134,9 @@ ibm, movimentacao = carregar_dados()
 # ── Sidebar ──────────────────────────────────────────────────────────────────
 with st.sidebar:
     st.markdown("""
-    <div style="padding:28px 16px 20px 16px; border-bottom:1px solid #E2E8F0; margin-bottom:12px;">
-        <div style="font-size:11px;font-weight:700;color:#94A3B8;letter-spacing:2px;text-transform:uppercase;">Recursos Humanos</div>
-        <div style="font-size:19px;font-weight:700;color:#0F172A;margin-top:4px;">Dashboard</div>
+    <div style="padding:28px 16px 20px 16px; border-bottom:1px solid rgba(214,204,186,0.15); margin-bottom:12px;">
+        <div style="font-size:10px;font-weight:600;color:#6B9B7A;letter-spacing:2px;text-transform:uppercase;">Recursos Humanos</div>
+        <div style="font-size:20px;font-weight:700;color:#EDE5D0;margin-top:4px;font-family:'Playfair Display',serif">Dashboard</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -144,21 +148,21 @@ with st.sidebar:
 
     st.markdown("""
     <div style="margin-top:40px;padding:0 16px;">
-        <div style="font-size:11px;color:#94A3B8;line-height:1.8">
+        <div style="font-size:11px;color:#6B7D6E;line-height:1.8">
             Desenvolvido por<br>
-            <a href="https://linkedin.com/in/eduardodiasds" style="color:#475569;text-decoration:none;font-weight:500">Eduardo Dias</a>
+            <a href="https://linkedin.com/in/eduardodiasds" style="color:#A8C4AF;text-decoration:none;font-weight:500">Eduardo Dias</a>
             &nbsp;·&nbsp;
-            <a href="https://github.com/eduudiass" style="color:#475569;text-decoration:none;font-weight:500">GitHub</a>
+            <a href="https://github.com/eduudiass" style="color:#A8C4AF;text-decoration:none;font-weight:500">GitHub</a>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
 
-# cores base: slate escuro para todos, slate-900 para o destaque
-COR_BASE   = "#475569"
-COR_DEST   = "#0F172A"
-COR_LINHA1 = "#334155"
-COR_LINHA2 = "#94A3B8"
+# verde floresta — mesma identidade do portfólio
+COR_BASE   = "#2D5A3D"
+COR_DEST   = "#1A3D2B"
+COR_LINHA1 = "#2D5A3D"
+COR_LINHA2 = "#7AAD8A"
 
 
 # ── Visão Geral ──────────────────────────────────────────────────────────────
@@ -335,10 +339,10 @@ elif aba == "Diversidade":
             hovertemplate="%{label}: %{value}%<extra></extra>"
         ))
         fig_genero.update_layout(
-            title=dict(text="Distribuição de Gênero", font=dict(size=14, color="#0F172A", family="Inter, sans-serif"), x=0),
-            plot_bgcolor="white",
-            paper_bgcolor="white",
-            font=dict(family="Inter, sans-serif", color="#64748B"),
+            title=dict(text="Distribuição de Gênero", font=dict(size=14, color="#1A1A1A", family="Playfair Display, serif"), x=0),
+            plot_bgcolor="#FBF8F1",
+            paper_bgcolor="#FBF8F1",
+            font=dict(family="Inter, sans-serif", color="#8A7D65"),
             showlegend=False,
             margin=dict(t=48, b=16, l=20, r=20),
         )
@@ -375,7 +379,7 @@ elif aba == "Diversidade":
         y="pct",
         color="genero",
         barmode="group",
-        color_discrete_map={"Masculino": COR_DEST, "Feminino": COR_BASE},
+        color_discrete_map={"Masculino": COR_DEST, "Feminino": "#7AAD8A"},
         text=genero_nivel["pct"].apply(lambda v: f"{v}%"),
         category_orders={"nivel_label": ["Júnior", "Pleno", "Sênior", "Especialista", "Gestão"]}
     )
