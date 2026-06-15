@@ -98,6 +98,42 @@ def calcular_absenteismo(df):
     return media, por_depto
 
 
+def calcular_horas_extras(df):
+    OT_MAP = {"Yes": "Com hora extra", "No": "Sem hora extra"}
+
+    # taxa de turnover por grupo de hora extra
+    taxa_ot = (
+        df.groupby("OverTime")["Attrition"]
+        .apply(lambda x: round((x == "Yes").sum() / len(x) * 100, 1))
+        .reset_index()
+    )
+    taxa_ot.columns = ["overtime", "turnover_pct"]
+    taxa_ot["overtime"] = taxa_ot["overtime"].map(OT_MAP)
+
+    taxa_com = taxa_ot.loc[taxa_ot["overtime"] == "Com hora extra", "turnover_pct"].values[0]
+    taxa_sem = taxa_ot.loc[taxa_ot["overtime"] == "Sem hora extra", "turnover_pct"].values[0]
+    multiplicador = round(taxa_com / taxa_sem, 1) if taxa_sem > 0 else 0
+
+    # entre os que saíram, quantos faziam hora extra
+    saidas = df[df["Attrition"] == "Yes"]
+    pct_ot_saidas = round((saidas["OverTime"] == "Yes").mean() * 100, 1)
+
+    # funcionários ativos que ainda fazem hora extra
+    em_risco = int(((df["OverTime"] == "Yes") & (df["Attrition"] == "No")).sum())
+
+    # hora extra por departamento entre os que saíram
+    ot_depto = (
+        df[df["Attrition"] == "Yes"]
+        .groupby("Department")["OverTime"]
+        .apply(lambda x: round((x == "Yes").mean() * 100, 1))
+        .reset_index()
+    )
+    ot_depto.columns = ["departamento", "pct_ot"]
+    ot_depto["departamento"] = ot_depto["departamento"].map(DEPARTAMENTOS)
+
+    return taxa_ot, taxa_com, taxa_sem, multiplicador, pct_ot_saidas, em_risco, ot_depto
+
+
 if __name__ == "__main__":
     ibm, movimentacao = carregar_dados()
     

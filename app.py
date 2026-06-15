@@ -5,7 +5,7 @@ import sys
 import os
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
-from metrics import carregar_dados, calcular_turnover, calcular_diversidade, calcular_absenteismo
+from metrics import carregar_dados, calcular_turnover, calcular_diversidade, calcular_absenteismo, calcular_horas_extras
 
 st.set_page_config(
     page_title="Dashboard RH",
@@ -150,7 +150,7 @@ with st.sidebar:
 
     aba = st.radio(
         "nav",
-        ["Visão Geral", "Turnover", "Admissões e Desligamentos", "Absenteísmo", "Diversidade"],
+        ["Visão Geral", "Turnover", "Admissões e Desligamentos", "Absenteísmo", "Diversidade", "Horas Extras"],
         label_visibility="collapsed"
     )
 
@@ -413,3 +413,72 @@ elif aba == "Diversidade":
     fig_nivel.update_layout(xaxis_title="Nível", yaxis_title="Percentual (%)", legend_title="Gênero")
     fig_nivel.update_traces(textposition="outside")
     st.plotly_chart(fig_nivel, use_container_width=True)
+
+
+# ── Horas Extras ──────────────────────────────────────────────────────────────
+elif aba == "Horas Extras":
+    taxa_ot, taxa_com, taxa_sem, multiplicador, pct_ot_saidas, em_risco, ot_depto = calcular_horas_extras(ibm)
+
+    st.markdown('<div class="page-title">Horas Extras</div>', unsafe_allow_html=True)
+    st.markdown('<div class="page-subtitle">Relação entre hora extra e saída de funcionários</div>', unsafe_allow_html=True)
+
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        kpi("Turnover com hora extra", f"{taxa_com}%", "dos que fazem hora extra saíram")
+    with col2:
+        kpi("Turnover sem hora extra", f"{taxa_sem}%", "dos que não fazem hora extra saíram")
+    with col3:
+        kpi("Risco relativo", f"{multiplicador}×", "mais chance de sair fazendo hora extra")
+
+    st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
+
+    col_a, col_b = st.columns(2)
+
+    with col_a:
+        cores_ot = [COR_DEST if r["overtime"] == "Com hora extra" else COR_BASE
+                    for _, r in taxa_ot.iterrows()]
+        fig = go.Figure(go.Bar(
+            x=taxa_ot["overtime"],
+            y=taxa_ot["turnover_pct"],
+            marker_color=cores_ot,
+            text=[f"{v}%" for v in taxa_ot["turnover_pct"]],
+            textposition="outside",
+            width=0.4
+        ))
+        estilo_chart(fig, "Taxa de Turnover por Regime de Hora Extra (%)")
+        fig.update_layout(
+            yaxis_range=[0, taxa_ot["turnover_pct"].max() * 1.4],
+            showlegend=False
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+    with col_b:
+        fig2 = go.Figure(go.Bar(
+            x=ot_depto["departamento"],
+            y=ot_depto["pct_ot"],
+            marker_color=[COR_DEST if v == ot_depto["pct_ot"].max() else COR_BASE
+                          for v in ot_depto["pct_ot"]],
+            text=[f"{v}%" for v in ot_depto["pct_ot"]],
+            textposition="outside",
+            width=0.4
+        ))
+        estilo_chart(fig2, "% de Saídas que Faziam Hora Extra — por Departamento")
+        fig2.update_layout(
+            yaxis_range=[0, ot_depto["pct_ot"].max() * 1.4],
+            showlegend=False
+        )
+        st.plotly_chart(fig2, use_container_width=True)
+
+    st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
+
+    pct_ot_ficaram = round(100 - pct_ot_saidas, 1)
+    fig3 = go.Figure()
+    fig3.add_trace(go.Bar(
+        name="Saíram", x=["Faziam hora extra", "Não faziam hora extra"],
+        y=[pct_ot_saidas, 100 - pct_ot_saidas],
+        marker_color=COR_DEST, text=[f"{pct_ot_saidas}%", f"{100 - pct_ot_saidas}%"],
+        textposition="outside", width=0.35
+    ))
+    estilo_chart(fig3, f"Composição das Saídas — {pct_ot_saidas}% dos que saíram faziam hora extra")
+    fig3.update_layout(yaxis_range=[0, 120], showlegend=False)
+    st.plotly_chart(fig3, use_container_width=True)
