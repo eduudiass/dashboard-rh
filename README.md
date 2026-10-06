@@ -6,13 +6,7 @@ Dashboard para análise de dados de pessoas construído com Python e Streamlit. 
 
 ## Funcionalidades
 
- **Visão Geral**: headcount, saídas, turnover e absenteísmo em um resumo executivo 
- **Turnover**: taxa de rotatividade por departamento com destaque para o pior índice 
- **Admissões e Desligamentos**: movimentação mensal ao longo de 24 meses 
- **Absenteísmo**: taxa média geral e por departamento 
- **Diversidade**:distribuição de gênero, faixa etária e representatividade por nível hierárquico 
- **Horas Extras**:relação entre hora extra e saída: quem faz hora extra tem 2.9× mais chance de sair 
- **Filtro por departamento**: todos os indicadores respondem ao filtro na sidebar 
+O Dashboard de RH reúne os principais indicadores de pessoas em uma única visão. A Visão Geral traz um resumo executivo com headcount, saídas, turnover e absenteísmo. Na aba de Turnover, a rotatividade aparece por departamento, com destaque para o pior índice. Admissões e Desligamentos mostra a movimentação mensal ao longo de 24 meses, e Absenteísmo apresenta a taxa média geral e por departamento. A seção de Diversidade cobre distribuição de gênero, faixa etária e representatividade por nível hierárquico. Em Horas Extras, o painel evidencia a relação entre hora extra e desligamento: quem faz hora extra tem 2,9 vezes mais chance de sair. Todos os indicadores respondem ao filtro por departamento na barra lateral.
 
 ## Sobre os dados
 
