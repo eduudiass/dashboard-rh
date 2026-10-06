@@ -6,13 +6,13 @@ Dashboard para análise de dados de pessoas construído com Python e Streamlit. 
 
 ## Funcionalidades
 
-- **Visão Geral**: headcount, saídas, turnover e absenteísmo em um resumo executivo
-- **Turnover**: taxa de rotatividade por departamento com destaque para o pior índice
-- **Admissões e Desligamentos**: movimentação mensal ao longo de 24 meses
-- **Absenteísmo**: taxa média geral e por departamento
-- **Diversidade**:distribuição de gênero, faixa etária e representatividade por nível hierárquico
-- **Horas Extras**:relação entre hora extra e saída: quem faz hora extra tem 2.9× mais chance de sair
-- **Filtro por departamento**: todos os indicadores respondem ao filtro na sidebar
+**Visão Geral**: headcount, saídas, turnover e absenteísmo em um resumo executivo
+**Turnover**: taxa de rotatividade por departamento com destaque para o pior índice
+**Admissões e Desligamentos**: movimentação mensal ao longo de 24 meses
+**Absenteísmo**: taxa média geral e por departamento
+**Diversidade**:distribuição de gênero, faixa etária e representatividade por nível hierárquico
+**Horas Extras**:relação entre hora extra e saída: quem faz hora extra tem 2.9× mais chance de sair
+**Filtro por departamento**: todos os indicadores respondem ao filtro na sidebar
 
 ## Sobre os dados
 
@@ -20,11 +20,11 @@ O projeto usa o [IBM HR Analytics Dataset](https://www.kaggle.com/datasets/pavan
 
 ## Tecnologias
 
-- Python
-- Pandas
-- NumPy
-- Plotly
-- Streamlit
+Python
+Pandas
+NumPy
+Plotly
+Streamlit
 
 ## Estrutura
 
@@ -52,12 +52,12 @@ O projeto usa o [IBM HR Analytics Dataset](https://www.kaggle.com/datasets/pavan
 
 ## Conceitos praticados
 
-- Transformação e agregação de dados com Pandas
-- Geração de dados sintéticos com NumPy
-- Visualizações interativas com Plotly
-- Análise de correlação sem ML (horas extras × turnover)
-- Separação de responsabilidades em módulos Python
-- Deploy de aplicação web com Streamlit Cloud
+Transformação e agregação de dados com Pandas
+Geração de dados sintéticos com NumPy
+Visualizações interativas com Plotly
+Análise de correlação sem ML (horas extras × turnover)
+Separação de responsabilidades em módulos Python
+Deploy de aplicação web com Streamlit Cloud
 
 ## Autor
 
