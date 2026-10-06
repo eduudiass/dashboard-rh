@@ -21,6 +21,7 @@ O projeto usa o [IBM HR Analytics Dataset](https://www.kaggle.com/datasets/pavan
 ## Tecnologias
 
 Python
+
 Pandas
 NumPy
 Plotly
